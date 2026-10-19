@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manutenção Preventiva — Luna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bordo:#6B1E2E; --bordo-dark:#4A1220; --bordo-light:#8B3345;
+    --creme:#F5EFE4; --creme-dark:#EDE4D4; --marrom:#A0785A;
+    --marrom-light:#C4A882; --marrom-dark:#7A5840;
+    --text:#2C1810; --text-light:#6B4F3A; --white:#FDFAF6;
+    --ok:#3D7A4A; --warn:#B43C3C; --prog:#C4A882;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{overflow-x:hidden;max-width:100vw}
+  body{font-family:'Jost',sans-serif;color:var(--text);background:var(--creme);min-height:100vh}
+  header{background:var(--bordo);color:var(--creme);padding:16px 26px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 2px 14px rgba(74,18,32,.25)}
+  header .brand{font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.18em;font-size:1.5rem}
+  header .sub{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--marrom-light)}
+  header a,.hbtn{color:var(--creme);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:7px 14px;border-radius:6px;cursor:pointer;font-family:inherit}
+  main{padding:26px;max-width:1400px;margin:0 auto}
+  h1{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--bordo-dark)}
+  .lead{color:var(--text-light);font-size:.85rem;margin:2px 0 18px}
+  label{display:block;font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text-light);margin-bottom:6px}
+  .inp{width:100%;padding:10px 12px;border:1.5px solid var(--creme-dark);border-radius:8px;font-family:inherit;font-size:.9rem;color:var(--text);background:var(--white);margin-bottom:14px}
+  .inp:focus{outline:none;border-color:var(--marrom)}
+  .btn{padding:10px 18px;background:var(--bordo);border:none;border-radius:8px;font-family:inherit;font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--creme);cursor:pointer}
+  .btn:hover{background:var(--bordo-dark)} .btn:disabled{opacity:.6}
+  .btn-outline{background:none;border:1.5px solid var(--bordo);color:var(--bordo)} .btn-outline:hover{background:var(--bordo);color:var(--creme)}
+  .btn-sm{padding:6px 12px;font-size:.68rem}
+  .btn-danger{background:var(--warn)}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .bar .inp{width:auto;margin:0}
+  .tabs{display:flex;gap:6px;border-bottom:1px solid var(--creme-dark);margin-bottom:18px;flex-wrap:wrap}
+  .tab{padding:10px 18px;background:none;border:none;border-bottom:3px solid transparent;font-family:inherit;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-light);cursor:pointer}
+  .tab.on{color:var(--bordo);border-bottom-color:var(--bordo);font-weight:600}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+  .kpi{background:var(--white);border:1px solid var(--creme-dark);border-radius:12px;padding:14px 16px}
+  .kpi .l{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-light)}
+  .kpi .v{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--bordo-dark);line-height:1.2}
+  .kpi.bad .v{color:var(--warn)} .kpi.good .v{color:var(--ok)}
+  .tablewrap{overflow:auto;background:var(--white);border:1px solid var(--creme-dark);border-radius:10px}
+  table{width:100%;border-collapse:collapse;font-size:.8rem}
+  th{background:var(--creme);text-align:left;padding:9px 10px;white-space:nowrap;position:sticky;top:0;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-light)}
+  td{padding:8px 10px;border-top:1px solid var(--creme-dark);vertical-align:middle}
+  td.atv{min-width:260px;max-width:380px}
+  .mes{text-align:center;padding:4px}
+  .cel{display:inline-block;width:30px;height:26px;line-height:26px;border-radius:6px;font-size:.72rem;font-weight:600;border:none;font-family:inherit}
+  .cel.p{background:var(--prog);color:var(--bordo-dark)} .cel.c{background:var(--ok);color:#fff}
+  .cel.a{background:var(--warn);color:#fff} .cel.vazio{color:#c9bba6;background:none}
+  button.cel{cursor:pointer} button.cel:hover{outline:2px solid var(--bordo)}
+  .cel.atual{box-shadow:0 0 0 2px var(--bordo)}
+  .tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.68rem;background:var(--creme-dark);color:var(--marrom-dark)}
+  .tag.off{background:#eee;color:#999}
+  .legenda{font-size:.75rem;color:var(--text-light);margin:12px 0;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+  .legenda .cel{width:22px;height:20px;line-height:20px;font-size:.65rem}
+  .empty{padding:30px;text-align:center;color:var(--text-light)}
+  .msg{font-size:.8rem;margin:8px 0;min-height:1em} .msg.err{color:var(--warn)} .msg.ok{color:var(--ok)}
+  .modal-overlay{position:fixed;inset:0;background:rgba(44,24,16,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+  .modal-overlay.show{display:flex}
+  .modal{background:var(--white);border-radius:14px;padding:26px;width:100%;max-width:520px;max-height:90vh;overflow:auto}
+  .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--bordo-dark);margin-bottom:4px}
+  .modal .sub{font-size:.8rem;color:var(--text-light);margin-bottom:16px}
+  .modal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .meses-sel{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px}
+  .meses-sel label{display:flex;align-items:center;gap:4px;margin:0;text-transform:none;letter-spacing:0;font-size:.8rem;cursor:pointer}
+  #gate{padding:60px 20px;text-align:center}
+  @media(max-width:640px){main{padding:16px}header{padding:14px 16px}}
+  @media print{
+    header,.bar,.tabs,.no-print,.cards{display:none!important}
+    body{background:#fff}main{padding:0;max-width:none}
+    .tablewrap{border:none;overflow:visible} th{position:static}
+    .print-title{display:block!important}
+    @page{size:A4 landscape;margin:10mm}
+    table{font-size:8pt} td,th{padding:3px 4px}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+  .print-title{display:none;margin-bottom:8px}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="brand">LUNA</div><div class="sub">Manutenção Preventiva</div></div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <span id="quem" style="font-size:.85rem"></span>
+    <a id="voltar" href="../Sistema-Luna/">← Portal</a>
+  </div>
+</header>
+
+<main>
+  <div id="gate">Carregando…</div>
+
+  <div id="app" style="display:none">
+    <h1>Manutenção Preventiva</h1>
+    <p class="lead">REG-PE-13-01 · Cronograma anual de manutenção preventiva dos equipamentos da fábrica (POP-PE-13 · BPF/ANVISA).</p>
+
+    <div class="cards" id="kpis"></div>
+
+    <div class="tabs">
+      <button class="tab on" data-aba="cronograma" onclick="mudarAba('cronograma')">Cronograma</button>
+      <button class="tab" data-aba="pendencias" onclick="mudarAba('pendencias')">Pendências do mês</button>
+      <button class="tab" data-aba="historico" onclick="mudarAba('historico')">Histórico</button>
+      <button class="tab" data-aba="cadastro" onclick="mudarAba('cadastro')">Equipamentos e planos</button>
+    </div>
+
+    <div class="bar no-print">
+      <select class="inp" id="selAno" onchange="trocarAno()"></select>
+      <select class="inp" id="selLocal" onchange="renderAba()"><option value="">Todas as localizações</option></select>
+      <select class="inp" id="selResp" onchange="renderAba()">
+        <option value="">Todos os responsáveis</option><option value="Terc.">Terceirizada</option><option value="Manut.">Manutenção interna</option>
+      </select>
+      <input class="inp" id="busca" placeholder="Buscar equipamento ou código…" oninput="renderAba()" style="min-width:220px">
+      <button class="btn btn-outline btn-sm" onclick="window.print()">🖨 Imprimir cronograma</button>
+      <button class="btn btn-outline btn-sm" id="btnNovoEquip" style="display:none" onclick="abrirEquip()">+ Equipamento</button>
+    </div>
+
+    <div class="print-title"><b>REG-PE-13-01: CRONOGRAMA ANUAL DE MANUTENÇÃO PREVENTIVA</b> — Ano de referência: <span id="printAno"></span></div>
+    <div id="conteudo"></div>
+
+    <div class="legenda" id="legenda">
+      <span><span class="cel p">P</span> Programado</span>
+      <span><span class="cel c">C</span> Concluído</span>
+      <span><span class="cel a">!</span> Atrasado</span>
+      <span>Freq.: D diário · S semanal · M mensal · Trim trimestral · Sem semestral · A anual</span>
+      <span>Resp.: Terc. = empresa terceirizada · Manut. = manutenção interna/RT</span>
+    </div>
+    <p class="lead no-print" style="font-size:.78rem">* Para toda intervenção deve ser aberta e preenchida a Ordem de Serviço (REG-PE-13-02), com assinatura de liberação de higiene/segurança de alimentos. Informe o nº da OS ao registrar a execução.</p>
+  </div>
+</main>
+
+<!-- MODAL: registrar execução -->
+<div class="modal-overlay" id="modalExec">
+  <div class="modal">
+    <h3 id="execTitulo">Registrar execução</h3>
+    <p class="sub" id="execSub"></p>
+    <label for="execData">Data da execução</label>
+    <input class="inp" id="execData" type="date">
+    <label for="execPor">Executado por</label>
+    <input class="inp" id="execPor" placeholder="Nome / empresa">
+    <label for="execOS">Nº da Ordem de Serviço (REG-PE-13-02)</label>
+    <input class="inp" id="execOS" placeholder="Ex.: OS-2026-014">
+    <label for="execObs">Observações</label>
+    <textarea class="inp" id="execObs" rows="3" style="resize:vertical"></textarea>
+    <div class="msg" id="execMsg"></div>
+    <div class="modal-actions">
+      <button class="btn" id="btnExecSalvar" onclick="salvarExec()">Salvar</button>
+      <button class="btn btn-danger" id="btnExecDesfazer" style="display:none" onclick="desfazerExec()">Desfazer conclusão</button>
+      <button class="btn btn-outline" onclick="fechar('modalExec')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: equipamento -->
+<div class="modal-overlay" id="modalEquip">
+  <div class="modal">
+    <h3 id="equipTitulo">Equipamento</h3>
+    <p class="sub">Cadastro do equipamento. Os planos de manutenção são adicionados depois.</p>
+    <label for="eqCodigo">Código</label><input class="inp" id="eqCodigo" placeholder="Ex.: FR-CAM-03">
+    <label for="eqNome">Equipamento / descrição</label><input class="inp" id="eqNome">
+    <label for="eqModelo">Marca / modelo</label><input class="inp" id="eqModelo">
+    <label for="eqLocal">Localização</label><input class="inp" id="eqLocal">
+    <label style="display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0"><input type="checkbox" id="eqAtivo" checked> Ativo (aparece no cronograma)</label>
+    <div class="msg" id="eqMsg"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="salvarEquip()">Salvar</button>
+      <button class="btn btn-outline" onclick="fechar('modalEquip')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: plano -->
+<div class="modal-overlay" id="modalPlano">
+  <div class="modal">
+    <h3 id="planoTitulo">Plano de manutenção</h3>
+    <p class="sub" id="planoSub"></p>
+    <label for="plFreq">Frequência</label>
+    <select class="inp" id="plFreq" onchange="aplicarFreq()">
+      <option value="D">Diária</option><option value="S">Semanal</option><option value="M" selected>Mensal</option>
+      <option value="Trim">Trimestral</option><option value="Sem">Semestral</option><option value="A">Anual</option>
+    </select>
+    <label for="plAtv">Atividade principal</label>
+    <textarea class="inp" id="plAtv" rows="3" style="resize:vertical"></textarea>
+    <label for="plResp">Responsável</label>
+    <select class="inp" id="plResp">
+      <option value="">—</option><option>Terc.</option><option>Manut.</option><option>Terc./Manut.</option>
+    </select>
+    <label>Meses programados</label>
+    <div class="meses-sel" id="plMeses"></div>
+    <label style="display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0"><input type="checkbox" id="plAtivo" checked> Plano ativo</label>
+    <div class="msg" id="plMsg"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="salvarPlano()">Salvar</button>
+      <button class="btn btn-outline" onclick="fechar('modalPlano')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://pbuhwpcpdcnaheaywmdv.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBidWh3cGNwZGNuYWhlYXl3bWR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNjU5MzksImV4cCI6MjA5MTg0MTkzOX0.Mg4PVg96ZiV3C2Rn0GLQU9c7ui_41OlU6Ldqn5jcvyY';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const FREQ_MESES = { D:[1,2,3,4,5,6,7,8,9,10,11,12], S:[1,2,3,4,5,6,7,8,9,10,11,12], M:[1,2,3,4,5,6,7,8,9,10,11,12], Trim:[1,4,7,10], Sem:[3,9], A:[1] };
+const FREQ_NOME = { D:'Diária', S:'Semanal', M:'Mensal', Trim:'Trimestral', Sem:'Semestral', A:'Anual' };
+
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtData(d){ return d ? new Date(d+'T12:00').toLocaleDateString('pt-BR') : '—'; }
+function msg(id, t, tipo){ const m=$(id); m.textContent=t; m.className='msg '+(tipo||''); }
+function fechar(id){ $(id).classList.remove('show'); }
+function abrir(id){ $(id).classList.add('show'); }
+
+let podeEditar = false, aba = 'cronograma';
+let equipamentos = [], planos = [], execucoes = [];
+const hoje = new Date();
+let ano = hoje.getFullYear();
+
+async function iniciar(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){
+    $('gate').innerHTML = 'Faça login no <a href="../Sistema-Luna/">portal Luna</a> e abra este módulo pelo menu lateral.';
+    return;
+  }
+  const { data: perfil } = await sb.from('perfis').select('nome, tipo').eq('id', session.user.id).maybeSingle();
+  $('quem').textContent = (perfil && perfil.nome) || session.user.email;
+  const { data: edit } = await sb.rpc('manutencao_pode_editar');
+  podeEditar = edit === true;
+  $('btnNovoEquip').style.display = 'none';
+  const { data: ver, error } = await sb.rpc('manutencao_pode_ver');
+  if(error || ver !== true){
+    $('gate').textContent = 'Você não tem acesso a este módulo. Fale com o administrador.';
+    return;
+  }
+  const anos = []; for(let a = hoje.getFullYear()+1; a >= hoje.getFullYear()-2; a--) anos.push(a);
+  $('selAno').innerHTML = anos.map(a => '<option value="'+a+'"'+(a===ano?' selected':'')+'>'+a+'</option>').join('');
+  $('gate').style.display = 'none';
+  $('app').style.display = 'block';
+  await carregar();
+}
+
+async function carregar(){
+  $('conteudo').innerHTML = '<div class="empty">Carregando…</div>';
+  const [e, p, x] = await Promise.all([
+    sb.from('manutencao_equipamentos').select('*').order('codigo'),
+    sb.from('manutencao_planos').select('*').order('criado_em'),
+    sb.from('manutencao_execucoes').select('*').eq('ano', ano),
+  ]);
+  const erro = e.error || p.error || x.error;
+  if(erro){ $('conteudo').innerHTML = '<div class="empty">Erro ao carregar: '+esc(erro.message)+'</div>'; return; }
+  equipamentos = e.data; planos = p.data; execucoes = x.data;
+  const locais = [...new Set(equipamentos.map(q => q.localizacao).filter(Boolean))].sort();
+  const atual = $('selLocal').value;
+  $('selLocal').innerHTML = '<option value="">Todas as localizações</option>' + locais.map(l => '<option'+(l===atual?' selected':'')+'>'+esc(l)+'</option>').join('');
+  renderAba();
+}
+function trocarAno(){ ano = Number($('selAno').value); carregar(); }
+function mudarAba(a){
+  aba = a;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.aba === a));
+  $('btnNovoEquip').style.display = (a === 'cadastro' && podeEditar) ? '' : 'none';
+  $('legenda').style.display = (a === 'cronograma') ? '' : 'none';
+  renderAba();
+}
+
+const execMap = () => { const m = {}; execucoes.forEach(x => m[x.plano_id+'|'+x.mes] = x); return m; };
+function estado(plano, mes, m){
+  if(!plano.meses.includes(mes)) return 'vazio';
+  if(m[plano.id+'|'+mes]) return 'c';
+  const mesAtual = hoje.getMonth()+1;
+  if(ano < hoje.getFullYear() || (ano === hoje.getFullYear() && mes < mesAtual)) return 'a';
+  return 'p';
+}
+function planosFiltrados(somenteAtivos = true){
+  const loc = $('selLocal').value, resp = $('selResp').value, q = $('busca').value.trim().toLowerCase();
+  const eqMap = Object.fromEntries(equipamentos.map(e => [e.id, e]));
+  return planos.filter(p => {
+    const e = eqMap[p.equipamento_id]; if(!e) return false;
+    if(somenteAtivos && (!p.ativo || !e.ativo)) return false;
+    if(loc && e.localizacao !== loc) return false;
+    if(resp && !(p.responsavel||'').includes(resp)) return false;
+    if(q && !(e.nome+' '+e.codigo+' '+(e.marca_modelo||'')).toLowerCase().includes(q)) return false;
+    return true;
+  }).map(p => ({ p, e: eqMap[p.equipamento_id] }))
+    .sort((a,b) => a.e.codigo.localeCompare(b.e.codigo) || 0);
+}
+
+function renderKpis(){
+  const m = execMap(), mesAtual = hoje.getMonth()+1;
+  const ativos = planos.filter(p => p.ativo && (equipamentos.find(e => e.id === p.equipamento_id)||{}).ativo);
+  let prog = 0, conc = 0, atras = 0, totAno = 0, concAno = 0;
+  const mesRef = ano === hoje.getFullYear() ? mesAtual : (ano < hoje.getFullYear() ? 12 : 1);
+  ativos.forEach(p => p.meses.forEach(mes => {
+    const feito = !!m[p.id+'|'+mes];
+    totAno++; if(feito) concAno++;
+    if(mes === mesRef){ prog++; if(feito) conc++; }
+    if(!feito && estado(p, mes, m) === 'a') atras++;
+  }));
+  const pct = totAno ? Math.round(concAno*100/totAno) : 0;
+  $('kpis').innerHTML =
+    '<div class="kpi"><div class="l">Programadas em '+MESES[mesRef-1]+'</div><div class="v">'+prog+'</div></div>'+
+    '<div class="kpi good"><div class="l">Concluídas em '+MESES[mesRef-1]+'</div><div class="v">'+conc+'</div></div>'+
+    '<div class="kpi '+(atras?'bad':'good')+'"><div class="l">Atrasadas (acumulado)</div><div class="v">'+atras+'</div></div>'+
+    '<div class="kpi"><div class="l">Cumprimento do ano</div><div class="v">'+pct+'%</div></div>';
+}
+
+function renderAba(){
+  $('printAno').textContent = ano;
+  renderKpis();
+  ({ cronograma: renderCronograma, pendencias: renderPendencias, historico: renderHistorico, cadastro: renderCadastro })[aba]();
+}
+
+function renderCronograma(){
+  const m = execMap(), lista = planosFiltrados();
+  if(!lista.length){ $('conteudo').innerHTML = '<div class="empty">Nenhum plano encontrado.</div>'; return; }
+  const mesAtual = hoje.getMonth()+1;
+  const cab = '<tr><th>Código</th><th>Equipamento</th><th>Marca / Modelo</th><th>Local</th><th>Freq.</th><th>Atividade</th>'+
+    MESES.map(x => '<th class="mes">'+x+'</th>').join('')+'<th>Resp.</th></tr>';
+  const linhas = lista.map(({p, e}) => {
+    const cels = MESES.map((_, i) => {
+      const mes = i+1, st = estado(p, mes, m);
+      const atual = (ano === hoje.getFullYear() && mes === mesAtual) ? ' atual' : '';
+      if(st === 'vazio') return '<td class="mes"><span class="cel vazio">·</span></td>';
+      const letra = st === 'c' ? 'C' : st === 'a' ? '!' : 'P';
+      return '<td class="mes"><button class="cel '+st+atual+'" title="'+(st==='c'?'Concluído em '+fmtData(m[p.id+'|'+mes].data_execucao):st==='a'?'Atrasado':'Programado')+'" onclick="abrirExec(\''+p.id+'\','+mes+')">'+letra+'</button></td>';
+    }).join('');
+    return '<tr><td><b>'+esc(e.codigo)+'</b></td><td>'+esc(e.nome)+'</td><td>'+esc(e.marca_modelo)+'</td><td>'+esc(e.localizacao)+'</td>'+
+      '<td><span class="tag">'+esc(p.frequencia)+'</span></td><td class="atv">'+esc(p.atividade)+'</td>'+cels+'<td>'+esc(p.responsavel)+'</td></tr>';
+  }).join('');
+  $('conteudo').innerHTML = '<div class="tablewrap"><table><thead>'+cab+'</thead><tbody>'+linhas+'</tbody></table></div>';
+}
+
+function renderPendencias(){
+  const m = execMap(), mesRef = ano === hoje.getFullYear() ? hoje.getMonth()+1 : 12;
+  const itens = [];
+  planosFiltrados().forEach(({p, e}) => p.meses.forEach(mes => {
+    const st = estado(p, mes, m);
+    if(st === 'a' || (st === 'p' && mes === mesRef)) itens.push({ p, e, mes, st });
+  }));
+  itens.sort((a,b) => a.mes - b.mes || a.e.codigo.localeCompare(b.e.codigo));
+  if(!itens.length){ $('conteudo').innerHTML = '<div class="empty">Nenhuma pendência. Tudo em dia ✅</div>'; return; }
+  $('conteudo').innerHTML = '<div class="tablewrap"><table><thead><tr><th>Mês</th><th>Situação</th><th>Código</th><th>Equipamento</th><th>Freq.</th><th>Atividade</th><th>Resp.</th><th></th></tr></thead><tbody>'+
+    itens.map(i => '<tr><td>'+MESES[i.mes-1]+'/'+ano+'</td><td><span class="cel '+i.st+'" style="width:auto;padding:0 8px">'+(i.st==='a'?'Atrasada':'No mês')+'</span></td>'+
+      '<td><b>'+esc(i.e.codigo)+'</b></td><td>'+esc(i.e.nome)+'</td><td>'+esc(i.p.frequencia)+'</td><td class="atv">'+esc(i.p.atividade)+'</td><td>'+esc(i.p.responsavel)+'</td>'+
+      '<td><button class="btn btn-sm" onclick="abrirExec(\''+i.p.id+'\','+i.mes+')">Registrar</button></td></tr>').join('')+'</tbody></table></div>';
+}
+
+function renderHistorico(){
+  const pMap = Object.fromEntries(planos.map(p => [p.id, p])), eMap = Object.fromEntries(equipamentos.map(e => [e.id, e]));
+  const q = $('busca').value.trim().toLowerCase();
+  const itens = execucoes.filter(x => pMap[x.plano_id]).map(x => ({ x, p: pMap[x.plano_id], e: eMap[pMap[x.plano_id].equipamento_id] }))
+    .filter(i => i.e && (!q || (i.e.nome+' '+i.e.codigo).toLowerCase().includes(q)))
+    .sort((a,b) => (b.x.data_execucao||'').localeCompare(a.x.data_execucao||''));
+  if(!itens.length){ $('conteudo').innerHTML = '<div class="empty">Nenhuma execução registrada em '+ano+'.</div>'; return; }
+  $('conteudo').innerHTML = '<div class="tablewrap"><table><thead><tr><th>Data</th><th>Mês ref.</th><th>Código</th><th>Equipamento</th><th>Atividade</th><th>Executado por</th><th>OS</th><th>Observações</th></tr></thead><tbody>'+
+    itens.map(({x,p,e}) => '<tr><td>'+fmtData(x.data_execucao)+'</td><td>'+MESES[x.mes-1]+'</td><td><b>'+esc(e.codigo)+'</b></td><td>'+esc(e.nome)+'</td><td class="atv">'+esc(p.atividade)+'</td><td>'+esc(x.executado_por)+'</td><td>'+esc(x.os_numero)+'</td><td>'+esc(x.observacoes)+'</td></tr>').join('')+'</tbody></table></div>';
+}
+
+function renderCadastro(){
+  const loc = $('selLocal').value, q = $('busca').value.trim().toLowerCase();
+  const eqs = equipamentos.filter(e => (!loc || e.localizacao === loc) && (!q || (e.nome+' '+e.codigo).toLowerCase().includes(q)));
+  if(!eqs.length){ $('conteudo').innerHTML = '<div class="empty">Nenhum equipamento.</div>'; return; }
+  $('conteudo').innerHTML = eqs.map(e => {
+    const ps = planos.filter(p => p.equipamento_id === e.id);
+    return '<div class="kpi" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">'+
+      '<div><b>'+esc(e.codigo)+'</b> — '+esc(e.nome)+(e.ativo?'':' <span class="tag off">inativo</span>')+
+      '<div class="l" style="margin-top:2px">'+esc(e.marca_modelo)+' · '+esc(e.localizacao)+'</div></div>'+
+      (podeEditar ? '<div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="abrirEquip(\''+e.id+'\')">Editar</button><button class="btn btn-sm" onclick="abrirPlano(\''+e.id+'\')">+ Plano</button></div>' : '')+
+      '</div>'+
+      (ps.length ? '<table style="margin-top:10px"><tbody>'+ps.map(p =>
+        '<tr><td style="width:70px"><span class="tag">'+esc(FREQ_NOME[p.frequencia]||p.frequencia)+'</span></td><td>'+esc(p.atividade)+(p.ativo?'':' <span class="tag off">inativo</span>')+'</td>'+
+        '<td style="white-space:nowrap">'+p.meses.map(x => MESES[x-1]).join(', ')+'</td><td>'+esc(p.responsavel)+'</td>'+
+        (podeEditar ? '<td style="white-space:nowrap"><button class="btn btn-outline btn-sm" onclick="abrirPlano(\''+e.id+'\',\''+p.id+'\')">Editar</button></td>' : '')+'</tr>').join('')+'</tbody></table>'
+        : '<div class="l" style="margin-top:8px">Sem planos cadastrados.</div>')+
+      '</div>';
+  }).join('');
+}
+
+// ── Execução ──
+let execCtx = null;
+function abrirExec(planoId, mes){
+  if(!podeEditar){ return; }
+  const p = planos.find(x => x.id === planoId), e = equipamentos.find(x => x.id === p.equipamento_id);
+  const ex = execucoes.find(x => x.plano_id === planoId && x.mes === mes);
+  execCtx = { planoId, mes, existente: ex || null };
+  $('execTitulo').textContent = e.codigo+' — '+e.nome;
+  $('execSub').textContent = MESES[mes-1]+'/'+ano+' · '+p.atividade;
+  $('execData').value = ex ? ex.data_execucao : new Date().toISOString().slice(0,10);
+  $('execPor').value = ex ? (ex.executado_por||'') : (p.responsavel === 'Terc.' ? 'Empresa terceirizada' : '');
+  $('execOS').value = ex ? (ex.os_numero||'') : '';
+  $('execObs').value = ex ? (ex.observacoes||'') : '';
+  $('btnExecDesfazer').style.display = ex ? '' : 'none';
+  msg('execMsg','','');
+  abrir('modalExec');
+}
+async function salvarExec(){
+  if(!$('execData').value){ msg('execMsg','Informe a data.','err'); return; }
+  const reg = { plano_id: execCtx.planoId, ano, mes: execCtx.mes, data_execucao: $('execData').value,
+    executado_por: $('execPor').value.trim()||null, os_numero: $('execOS').value.trim()||null, observacoes: $('execObs').value.trim()||null };
+  $('btnExecSalvar').disabled = true;
+  const { error } = await sb.from('manutencao_execucoes').upsert(reg, { onConflict: 'plano_id,ano,mes' });
+  $('btnExecSalvar').disabled = false;
+  if(error){ msg('execMsg','Erro: '+error.message,'err'); return; }
+  fechar('modalExec'); carregar();
+}
+async function desfazerExec(){
+  if(!confirm('Desfazer a conclusão desta manutenção?')) return;
+  const { error } = await sb.from('manutencao_execucoes').delete().eq('id', execCtx.existente.id);
+  if(error){ msg('execMsg','Erro: '+error.message,'err'); return; }
+  fechar('modalExec'); carregar();
+}
+
+// ── Equipamentos ──
+let equipId = null;
+function abrirEquip(id){
+  equipId = id || null;
+  const e = id ? equipamentos.find(x => x.id === id) : {};
+  $('equipTitulo').textContent = id ? 'Editar equipamento' : 'Novo equipamento';
+  $('eqCodigo').value = e.codigo||''; $('eqNome').value = e.nome||''; $('eqModelo').value = e.marca_modelo||''; $('eqLocal').value = e.localizacao||'';
+  $('eqAtivo').checked = id ? e.ativo : true; msg('eqMsg','','');
+  abrir('modalEquip');
+}
+async function salvarEquip(){
+  const reg = { codigo: $('eqCodigo').value.trim(), nome: $('eqNome').value.trim(), marca_modelo: $('eqModelo').value.trim()||null, localizacao: $('eqLocal').value.trim()||null, ativo: $('eqAtivo').checked };
+  if(!reg.codigo || !reg.nome){ msg('eqMsg','Código e nome são obrigatórios.','err'); return; }
+  const { error } = equipId ? await sb.from('manutencao_equipamentos').update(reg).eq('id', equipId) : await sb.from('manutencao_equipamentos').insert(reg);
+  if(error){ msg('eqMsg', error.code === '23505' ? 'Já existe um equipamento com esse código.' : 'Erro: '+error.message, 'err'); return; }
+  fechar('modalEquip'); carregar();
+}
+
+// ── Planos ──
+let planoCtx = null;
+function abrirPlano(equipamentoId, planoId){
+  const e = equipamentos.find(x => x.id === equipamentoId), p = planoId ? planos.find(x => x.id === planoId) : null;
+  planoCtx = { equipamentoId, planoId: planoId || null };
+  $('planoTitulo').textContent = p ? 'Editar plano' : 'Novo plano';
+  $('planoSub').textContent = e.codigo+' — '+e.nome;
+  $('plFreq').value = p ? p.frequencia : 'M';
+  $('plAtv').value = p ? p.atividade : '';
+  $('plResp').value = p ? (p.responsavel||'') : '';
+  $('plAtivo').checked = p ? p.ativo : true;
+  $('plMeses').innerHTML = MESES.map((n, i) => '<label><input type="checkbox" value="'+(i+1)+'"'+((p ? p.meses : FREQ_MESES.M).includes(i+1)?' checked':'')+'> '+n+'</label>').join('');
+  msg('plMsg','','');
+  abrir('modalPlano');
+}
+function aplicarFreq(){
+  const sel = FREQ_MESES[$('plFreq').value] || [];
+  $('plMeses').querySelectorAll('input').forEach(c => c.checked = sel.includes(Number(c.value)));
+}
+async function salvarPlano(){
+  const meses = [...$('plMeses').querySelectorAll('input:checked')].map(c => Number(c.value));
+  const reg = { frequencia: $('plFreq').value, atividade: $('plAtv').value.trim(), responsavel: $('plResp').value||null, meses, ativo: $('plAtivo').checked };
+  if(!reg.atividade){ msg('plMsg','Descreva a atividade.','err'); return; }
+  if(!meses.length){ msg('plMsg','Marque ao menos um mês.','err'); return; }
+  const { error } = planoCtx.planoId
+    ? await sb.from('manutencao_planos').update(reg).eq('id', planoCtx.planoId)
+    : await sb.from('manutencao_planos').insert({ ...reg, equipamento_id: planoCtx.equipamentoId });
+  if(error){ msg('plMsg','Erro: '+error.message,'err'); return; }
+  fechar('modalPlano'); carregar();
+}
+
+iniciar();
+</script>
+</body>
+</html>
